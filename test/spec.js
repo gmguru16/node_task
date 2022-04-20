@@ -1,20 +1,24 @@
-const { describe, it } = require('mocha');
-const { use, expect } = require('chai');
-const request = require('supertest');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../index');
+var expect = chai.expect;
+
+chai.use(chaiHttp);
 
 describe('Testing', ()=> {
-    it('transactionAmount exceeds the senderBalance, it return insufficient fund error', async()=> {
+    it('transactionAmount exceeds the senderBalance, it return insufficient fund error', (done)=> {
         let reqDetails = {
             "senderBalance": 1000,
             "receiverBalance": 500,
             "transactionAmount": 10000
         }
-        await request()
-        .post("/transaction").body(reqDetails)
-        .then(resp => {
+        chai.request(server)
+        .post("/transaction").send(reqDetails)
+        .end((err, resp) => {
             const { body } = resp;
             expect(resp.status).to.equal(200);
             expect(body.message).to.equal('Not enough fund. Please increase your account balance');
+        done();
         })
     });
 
@@ -24,8 +28,8 @@ describe('Testing', ()=> {
             "receiverBalance": 500,
             "transactionAmount": 100
         }
-        await request()
-        .post("/transaction").body(reqDetails)
+        chai.request(server)
+        .post("/transaction").send(reqDetails)
         .then(resp => {
             const { body } = resp;
             expect(resp.status).to.equal(200);
@@ -41,8 +45,8 @@ describe('Testing', ()=> {
             "receiverBal": 500,
             "transactionAmnt": 100
         }
-        await request()
-        .post("/transaction").body(reqDetails)
+        chai.request(server)
+        .post("/transaction").send(reqDetails)
         .then(resp => {
             const { body } = resp;
             expect(resp.status).to.equal(400);

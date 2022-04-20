@@ -7,9 +7,6 @@ app.use(router)
 
 
 app.use(bodyParser.json())
-app.listen(3000, () => {
-    console.log('server listening');
-});
 
 app.post('/transaction', (req, res)=> {
     try {
@@ -41,3 +38,7 @@ app.post('/transaction', (req, res)=> {
         })
     }
 })
+
+module.exports = app.listen(3000, () => {
+    console.log('server listening');
+});
